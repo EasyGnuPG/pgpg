@@ -11,7 +11,7 @@ git clone https://github.com/EasyGnuPG/pgpg
 virtualenv --python=python3 python3venv
 source ./python3venv/bin/activate # activate virtual environment
 cd pgpg
-pip install --develop .
+pip3 install --editable .
 # One should develop and test pgpg in virtualenv only
 # When you are done with the testing use:
 deactivate
