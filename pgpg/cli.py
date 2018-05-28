@@ -1,14 +1,7 @@
 import click
 
-from pgpg.core.cli import cmd_init
-from pgpg.core.cli import cmd_migrate
-from pgpg.core.cli import cmd_info
-from pgpg.core.cli import cmd_seal
-from pgpg.core.cli import cmd_open
-from pgpg.core.cli import cmd_sign
-from pgpg.core.cli import cmd_verify
-from pgpg.core.cli import cmd_set
-from pgpg.core.cli import cmd_gpg
+from pgpg.core.cli import (cmd_init, cmd_migrate, cmd_info, cmd_seal, 
+    cmd_open, cmd_sign, cmd_verify, cmd_set, cmd_gpg)
 
 from pgpg.key.cli import cmd_key
 
@@ -27,7 +20,6 @@ def main():
     GnuPG. In order to simplify things, it is opinionated about the "right"
     way to use GnuPG.
     """
-    #raise NotImplementedError
 
 main.add_command(cmd_init,"init")
 main.add_command(cmd_migrate,"migrate")
