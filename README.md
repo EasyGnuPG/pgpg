@@ -2,21 +2,20 @@
 
 Implementation of EasyGnuPG with Python and GPGME.
 
-## Devloper Installation
+## Developer Installation
 
-```bash
-apt-get install python3-pip python3-gnupg
-pip3 install virtualenv
-git clone https://github.com/EasyGnuPG/pgpg
-virtualenv --python=python3 python3venv
-source ./python3venv/bin/activate # activate virtual environment
-cd pgpg
-pip3 install --editable .
-# One should develop and test pgpg in virtualenv only
-# When you are done with the testing use:
-deactivate
-# you can get back into the virtual env by activating it again (line 4)
+You should use instructions given at [pgpg-ds](https://github.com/EasyGnuPG/pgpg-ds) for installing pgpg inside a docker container. `pgpg` is in developement phase and should not be tested outside the container. 
+
+The commands which can be tried as of now are
 ```
+pgpg --help
+pgpg key --help
+pgpg contact --help
+```
+
+You should get `NotImplementedError` for others. The above commands without
+`--help` option will also produce help only as I haven't pointed them to
+anything 
 
 ## User Installation
 
