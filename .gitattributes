@@ -1,0 +1,3 @@
+src/egpg.sh filter=trimwhite
+src/affirm/* filter=trimwhite
+src/commands/* filter=trimwhite
