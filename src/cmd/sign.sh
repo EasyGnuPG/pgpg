@@ -15,7 +15,7 @@ cmd_sign() {
 
     # sign
     gnupghome_setup
-    python "$LIBDIR/cmd/gpg-sign.py" $GPG_KEY "$file"
+    python3 "$LIBDIR/cmd/gpg-sign.py" $GPG_KEY "$file"
     gnupghome_reset
 }
 
