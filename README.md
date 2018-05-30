@@ -1,4 +1,3 @@
-
 There are scads of options presented by GnuPG, which are all part of
 making it the flexible and powerful an encryption framework that it
 is. But it's extremely complicated to get started with, and that quite
@@ -33,7 +32,7 @@ For more details see the following presentation from FOSDEM 2018:
 
 ## Installation
 
-    git clone --branch gnupg-2.1 https://github.com/easygnupg/egpg
+    git clone --branch gnupg-2.2 https://github.com/easygnupg/egpg
     cd egpg/
     sudo make install
 
@@ -42,10 +41,10 @@ For more details see the following presentation from FOSDEM 2018:
  - Debian and Ubuntu:
 
         apt install gnupg2 pinentry-tty haveged libgfshare-bin parcimonie \
-               qrencode imagemagick zbar-tools wget realpath psmisc
-   
+               qrencode imagemagick zbar-tools wget coreutils psmisc make
+
    For development, you need also `ronn` to make the man pages:
-   
+
         apt install ruby-dev gcc
         gem install ronn
 
@@ -79,5 +78,5 @@ terminology, etc. is wellcome.
 
 For more details see the wiki pages and the manual page:
  - https://github.com/easygnupg/egpg/wiki
- - https://easygnupg.github.io/egpg/gnupg-2.1/man/
+ - http://dashohoxha.github.io/egpg/gnupg-2.1/man/
 
