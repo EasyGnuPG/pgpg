@@ -121,6 +121,13 @@ call_fn() {
     $fn "$@"
 }
 
+call_gpg() {
+    local file=$1; shift
+    local pyfile="$LIBDIR/gpg/$file"
+    [[ -f "$pyfile" ]] || fail "Cannot find python file: $pyfile"
+    python3 "$pyfile" "$@"
+}
+
 call_ext() {
     local cmd=$1; shift
 
