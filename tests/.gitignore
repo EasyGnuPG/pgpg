@@ -1,0 +1,5 @@
+gnupg/random_seed
+gnupg/S.gpg-agent
+test-results/
+trash directory.*
+trash/
