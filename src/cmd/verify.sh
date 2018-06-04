@@ -17,7 +17,7 @@ cmd_verify() {
     [[ -f "$file" ]] || fail "Cannot find file '$file'"
 
     # verify
-    gpg --verify "$signature" "$file"
+    call_gpg verify.py "$signature" "$file"
 }
 
 #
