@@ -1,6 +1,7 @@
 import sys
 import gpg
 import time
+import textwrap
 
 
 def verify(signature_file, filename):
@@ -9,9 +10,9 @@ def verify(signature_file, filename):
     signature_file has the detached signature
     filename has the name of the file which is signed
     """
-    
+
     c = gpg.Context()
-    
+
     try:
         _, result = c.verify(open(filename), open(signature_file))
         verified = True
@@ -20,15 +21,20 @@ def verify(signature_file, filename):
         print(e)
 
     if verified is True:
-        for i in range(len(result.signatures)):
-            sign = result.signatures[i]
-            print(  
-                'Signature made {2}\n'
-                '\tusing key {1}\n'
-                'Good signature from "{0}"'
-                .format(c.get_key(sign.fpr).uids[0].uid,
-                sign.fpr, time.ctime(sign.timestamp))         
-            )
+        for signature in result.signatures:
+            user = c.get_key(signature.fpr).uids[0].uid
+            fpr = signature.fpr
+            signed_time = time.ctime(signature.timestamp)
+
+            message = '''
+                      Good signature from {user}
+                      with key {fingerprint}
+                      made at {time}
+                      '''.format(user=user,
+                                 fingerprint=fpr,
+                                 time=signed_time)
+
+            print(textwrap.dedent(message))
 
 
 if __name__ == "__main__":
