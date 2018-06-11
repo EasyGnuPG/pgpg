@@ -192,6 +192,7 @@ config() {
 
     export GNUPGHOME
     export GPG_TTY=$(tty)
+    export EGPG_DEBUG=$DEBUG
 
     # create the config file, if it does not exist
     local gpghome="$GNUPGHOME"
