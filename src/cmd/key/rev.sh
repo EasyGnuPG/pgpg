@@ -30,7 +30,7 @@ Are you sure about this?" || return 1
     call_gpg key/rev.py "$revcert"
     
     local err=$?
-    [[ $err == 0 ]] || fail "Key revokation failed"
+    [[ $err == 0 ]] || fail "Key revocation failed"
     
     call_fn gpg_send_keys $GPG_KEY
 }

@@ -11,7 +11,7 @@ def revoke(revcert_path):
             if result is None:
                 exit(1)
     except BaseException:
-        if(os.environ['EGPG_DEBUG']=='yes'):
+        if(os.environ['DEBUG']=='yes'):
             raise
         exit(2)
 
