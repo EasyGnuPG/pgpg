@@ -20,9 +20,11 @@ cmd_open() {
 
     # decrypt and verify
     gnupghome_setup
-    gpg --keyserver "$KEYSERVER" \
-        --keyserver-options auto-key-retrieve,honor-keyserver-url \
-        --decrypt --output "$output" "$file"
+    call_gpg open.py "$file" "$output"
+
+    local err=$?
+    [[ $err == 0 ]] || fail "Error opening $file"
+
     gnupghome_reset
 }
 
