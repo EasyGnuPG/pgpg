@@ -19,14 +19,9 @@ cmd_seal() {
         rm -f "$file.sealed"
     fi
 
-    # get recipients
     get_gpg_key
-    local recipients="$GPG_KEY"
-    while [[ -n "$1" ]]; do
-        recipients="$recipients $1"
-        shift
-    done
-
+    local recipients="$GPG_KEY $@"
+    
     # sign and encrypt
     gnupghome_setup
     call_gpg seal.py $file $recipients
