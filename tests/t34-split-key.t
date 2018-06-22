@@ -24,7 +24,7 @@ test_expect_success 'egpg sign' '
 '
 
 test_expect_success 'egpg verify' '
-    egpg verify test1.txt.signature 2>&1 | grep "gpg: Good signature from \"Test 1 <test1@example.org>\""
+    egpg verify test1.txt.signature 2>&1 | grep "Good signature from \"Test 1 <test1@example.org>\""
 '
 
 test_expect_success 'egpg seal' '
