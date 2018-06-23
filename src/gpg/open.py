@@ -44,18 +44,6 @@ def open_file(sealed_file_path, output_file_path):
                 print("Could not verify signatures")
                 exit(3)
 
-        while(os.path.exists(output_file_path)):
-            print("File {output} already exists"
-                  .format(output=output_file_path))
-            print("Do you want to overwrite?(y/N)", end=">")
-
-            ans = input()
-            if ans.lower() == 'y':
-                break
-            else:
-                print("New file name", end=":")
-                output_file_path = input()
-
         with open(output_file_path, "wb") as nfile:
             nfile.write(plaintext)
 
