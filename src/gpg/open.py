@@ -13,12 +13,12 @@ def print_signatures(verify_result):
         signed_time = time.ctime(signature.timestamp)
 
         message = '''
-                    Good signature from {user}
-                    with key {fingerprint}
-                    made at {time}
-                    '''.format(user=user,
-                               fingerprint=fpr,
-                               time=signed_time)
+                  Good signature from "{user}"
+                  with key {fingerprint}
+                  made at {time}
+                  '''.format(user=user,
+                             fingerprint=fpr,
+                             time=signed_time)
 
         print(textwrap.dedent(message))
 
