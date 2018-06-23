@@ -20,11 +20,11 @@ cmd_seal() {
     fi
 
     get_gpg_key
-    local recipients="$GPG_KEY $@"
+    local recipients=("$GPG_KEY" "$@")
     
     # sign and encrypt
     gnupghome_setup
-    call_gpg seal.py $file $recipients
+    call_gpg seal.py "$file" "$recipients"
     
     local err=$?
     [[ $err == 0 ]] || fail "Error encrypting $file"
