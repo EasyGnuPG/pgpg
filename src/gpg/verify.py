@@ -27,7 +27,7 @@ def verify(signature_file, filename):
             signed_time = time.ctime(signature.timestamp)
 
             message = '''
-                      Good signature from {user}
+                      Good signature from "{user}"
                       with key {fingerprint}
                       made at {time}
                       '''.format(user=user,
