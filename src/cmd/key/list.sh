@@ -43,10 +43,12 @@ cmd_key_list() {
         return
 
     # display the details of each key
-    source "$LIBDIR/fn/print_key.sh"
     for gpg_key in $secret_keys; do
         echo
-        print_key $gpg_key
+        call_gpg fn/print_key.py $gpg_key
+        
+        local err=$?
+        [[ $err == 0 ]] || fail "Error getting key $gpg_key"
         echo
     done
 }
