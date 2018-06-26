@@ -21,8 +21,7 @@ def print_key(identity):
         key = key[0]
 
     if os.environ["DEBUG"] == "yes":
-        print(key)
-        print()
+        print(key, end='\n\n')
 
     # uid
     uid_list = ["uid: " + user_id.uid for user_id in key.uids]
@@ -40,6 +39,7 @@ def print_key(identity):
         "MARGINAL": "MARGINAL",
         "FULL": "FULL"
         }
+
     trust = filter(lambda t: eval("gpg.constants.validity." + t) ==
                    key.owner_trust, trust_map.keys())
     trust = trust_map[list(trust)[0]].lower()
@@ -48,26 +48,24 @@ def print_key(identity):
     # keys
     subkey_list = []
     for subkey in key.subkeys:
-        subkey_id = subkey.keyid
-        tformat = "%Y-%m-%d"
-        start = time.strftime(tformat, time.localtime(subkey.timestamp))
+        start = time.strftime("%Y-%m-%d", time.localtime(subkey.timestamp))
 
         # check if key never expires
         endtime = time.localtime(subkey.expires)
-        end = time.strftime(tformat, endtime) if endtime != 0 else "never"
+        end = time.strftime("%Y-%m-%d", endtime) if endtime != 0 else "never"
 
-        exp = "expired" if subkey.expired == 1 else ""
+        exp = "expired" if subkey.expired else ""
 
-        if subkey.can_sign == 1:
+        if subkey.can_sign:
             u = "sign"
-        elif subkey.can_authenticate == 1:
+        elif subkey.can_authenticate:
             u = "auth"
-        elif subkey.can_encrypt == 1:
+        elif subkey.can_encrypt:
             u = "decr"
 
         subkey_map = {
             "u": u,
-            "subkey_id": subkey_id,
+            "subkey_id": subkey.keyid,
             "start": start,
             "end": end,
             "exp": exp
@@ -82,10 +80,10 @@ def print_key(identity):
     sign_list = []
     for uid in key.uids:
         for sign in uid.signatures:
-            if (sign.keyid != identity and
-                    sign.revoked == 0 and sign.expired == 0):
-                sign_list.append("certified by: " +
-                                 sign.uid + " " + sign.keyid)
+            if sign.keyid != identity:
+                if not (sign.revoked or sign.expired):
+                    sign_list.append("certified by: " +
+                                     sign.uid + " " + sign.keyid)
 
     signatures = "\n".join(sign_list)
 
@@ -112,6 +110,6 @@ if __name__ == "__main__":
         identity = sys.argv[1]
         print_key(identity)
     except BaseException:
-        if(os.environ["DEBUG"] == "yes"):
+        if os.environ["DEBUG"] == "yes":
             raise
         exit(2)
