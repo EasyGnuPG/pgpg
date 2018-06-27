@@ -15,7 +15,10 @@ cmd_contact_import() {
 
     # import
     echo "Importing contacts from file: $file"
-    gpg --import "$file"
+    call_gpg contact/import.py "$file"
+
+    local err=$?
+    [[ $err == 0 ]] || fail "Importing contact failed"
 }
 
 #
