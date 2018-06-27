@@ -18,5 +18,7 @@ def import_contact(import_path):
 
 
 if __name__ == "__main__":
-    import_path = sys.argv[1]
-    import_contact(import_path)
+    import_path_list = sys.argv[1:]
+
+    for import_path in import_path_list:
+        import_contact(import_path)
