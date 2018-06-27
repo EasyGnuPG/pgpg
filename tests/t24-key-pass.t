@@ -8,6 +8,7 @@ test_expect_success 'egpg key pass' '
     egpg_key_fetch &&
 
     setup_autopin "0123456789" &&
+    echo "$autopin" &&
     egpg key pass &&
 
     echo "Test 1" > test1.txt &&
