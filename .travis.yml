@@ -1,0 +1,24 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - git clone "https://github.com/diveshuttam/ds"
+  - cd ds
+  - sudo make install
+  - rm -rf ds
+  - cd -
+  - sudo git clone --branch bionic "https://github.com/easygnupg/pgpg-ds" "/opt/docker-scripts/pgpg-bionic"
+  - sudo ds init pgpg-bionic @pgpg-bionic
+
+install:
+  - pwd
+  - sudo mkdir -p /var/ds/pgpg-bionic/pgpg/
+  - sudo cp -r ./* /var/ds/pgpg-bionic/pgpg/
+  - cd "/var/ds/pgpg-bionic/"
+  - sudo ds make
+
+script:
+  - sudo ds inject run-tests.sh
+
