@@ -2,19 +2,9 @@ import gpg
 import sys
 import os
 
-try:
-    autopin = os.environ["autopin"]
-    sys.path.insert(0, autopin.rsplit("/", 1)[0])
-    exec('import autopin')
-    sys.path.pop(0)
-except KeyError:
-    autopin = None
-
 
 def passwd(keyid):
     c = gpg.Context()
-    if autopin is not None:
-        c = autopin.setup(c)
     keys = list(c.keylist(keyid))
 
     if len(keys) != 1:

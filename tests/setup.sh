@@ -67,7 +67,8 @@ _EOF
 
 setup_autopin() {
     local pin="${1:-123456}" &&
-    cp -f "$CODE"/utils/autopin.py "$EGPG_DIR"/ &&
-    export autopin="$EGPG_DIR"/autopin.py &&
-    sed -i "$autopin" -e "/^PIN=/ c PIN='$pin'"
+    cp -f "$CODE"/utils/autopin.sh "$EGPG_DIR"/ &&
+    local autopin="$EGPG_DIR"/autopin.sh &&
+    sed -i "$autopin" -e "/^PIN=/ c PIN='$pin'" &&
+    sed -i "$EGPG_DIR"/.gnupg/gpg-agent.conf -e "/^pinentry-program/ c pinentry-program \"$autopin\""
 }
