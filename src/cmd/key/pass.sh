@@ -21,7 +21,7 @@ Try first:  $(basename $0) key join
 
     local err=$?
     # TODO: use fail here after correcting test24. 
-    [[ $err == 0 ]] || echo "Error changing passphrase for $GPG_KEY" 2>&1
+    [[ $err == 0 ]] || echo "Error changing passphrase for $GPG_KEY" >&2
 }
 
 #
