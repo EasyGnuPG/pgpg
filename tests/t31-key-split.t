@@ -70,17 +70,9 @@ test_expect_success 'egpg key split (option checks)' '
 
     echo "$DONGLE/test1" | egpg key split 2>&1 | grep "Dongle directory does not exist" &&
 
-    mkdir -p "$DONGLE/test1" &&
-    chmod -w "$DONGLE/test1" &&
-    echo "$DONGLE/test1" | egpg key split 2>&1 | grep "Dongle directory is not writable" &&
-
     egpg set dongle "$DONGLE" &&
 
-    egpg key split -b "$HOME/test1" 2>&1 | grep "Backup directory does not exist" &&
-
-    mkdir -p "$HOME/test1" &&
-    chmod -w "$HOME/test1" &&
-    egpg key split -b "$HOME/test1" 2>&1 | grep "Backup directory is not writable"
+    egpg key split -b "$HOME/test1" 2>&1 | grep "Backup directory does not exist"
 '
 
 test_done
