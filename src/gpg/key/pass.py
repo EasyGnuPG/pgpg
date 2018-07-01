@@ -4,18 +4,18 @@ import os
 
 
 def passwd(keyid):
-    c = gpg.Context()
-    keys = list(c.keylist(keyid))
-    key = keys[0]
-    c.op_passwd(key, 0)
+    try:
+        c = gpg.Context()
+        keys = list(c.keylist(keyid))
+        key = keys[0]
+        c.op_passwd(key, 0)
+
+    except BaseException:
+        if os.environ["DEBUG"] == "yes":
+            raise
+        exit(1)
 
 
 if __name__ == "__main__":
     keyid = sys.argv[1]
-    try:
-        passwd(keyid)
-    except BaseException:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        else:
-            exit(1)
+    passwd(keyid)
