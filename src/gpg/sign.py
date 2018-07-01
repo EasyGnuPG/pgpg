@@ -1,5 +1,6 @@
 import sys
 import gpg
+import os
 
 
 def sign(key, filename):
@@ -13,7 +14,15 @@ def sign(key, filename):
     with open(filename, "rb") as tfile:
         text = tfile.read()
 
-    signed_data, result = c.sign(text, mode=gpg.constants.sig.mode.DETACH)
+    try:
+        signed_data, _result = c.sign(text, mode=gpg.constants.sig.mode.DETACH)
+    except gpg.errors.GPGMEError as e:
+        if("Bad passphrase" in str(e)):
+            sys.stderr.write("Bad passphrase\n")
+        elif(os.environ["DEBUG"] == "yes"):
+            raise
+
+        exit(2)
 
     with open(filename+".signature", "wb") as afile:
         afile.write(signed_data)
