@@ -37,5 +37,8 @@ if __name__ == "__main__":
     contacts = [None]
     if (len(sys.argv) > 2):
         contacts = sys.argv[2:]
-    print(contacts)
+
+    if os.environ['DEBUG'] == 'yes':
+        print("contacts:", contacts, sep="\n")
+
     export(export_path, contacts)
