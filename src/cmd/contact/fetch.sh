@@ -27,13 +27,20 @@ cmd_contact_fetch() {
     [[ -d "$homedir" ]] || fail "Cannot find gnupg directory: $homedir"
     echo "Importing contacts from: $homedir"
 
+    # save current GNUPGHOME and export new homedir
+    local GNUPGHOME_BAK=$GNUPGHOME
+    export GNUPGHOME=$homedir
+    
     # export to tmp file
     workdir_make
     local file="$WORKDIR/contacts.asc"
-    gpg --homedir="$homedir" --armor --export "$@" > "$file"
+    call_gpg contact/export.py "$file" "$@"
+
+    # restore GNUPGHOME_BAK
+    export GNUPGHOME=$GNUPGHOME_BAK
 
     # import from the tmp file
-    gpg --import "$file"
+    call_gpg contact/import.py "$file"
     workdir_clear
 }
 
