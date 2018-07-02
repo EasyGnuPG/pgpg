@@ -30,10 +30,10 @@ cmd_contact_fetch() {
     # export to tmp file
     workdir_make
     local file="$WORKDIR/contacts.asc"
-    gpg --homedir="$homedir" --armor --export "$@" > "$file"
+    call_gpg contact/export.py "$homedir" "$file" "$@"
 
     # import from the tmp file
-    gpg --import "$file"
+    call_gpg contact/import.py "$file"
     workdir_clear
 }
 
