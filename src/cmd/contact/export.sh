@@ -29,7 +29,7 @@ cmd_contact_export() {
     [[ -z "$output" ]] && output="-"
 
     # export
-    call_gpg contact/export.py $output $@
+    call_gpg contact/export.py "$GNUPGHOME" "$output" "$@"
     
     err=$?
     [[ $err == 0 ]] || fail "exporting keys failed"

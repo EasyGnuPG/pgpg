@@ -3,8 +3,8 @@ import sys
 import os
 
 
-def export(export_path, contacts):
-    c = gpg.Context(armor=True)
+def export(export_path, homedir, contacts):
+    c = gpg.Context(armor=True, home_dir=homedir)
 
     if(export_path == "-"):
         export_file = sys.stdout
@@ -33,12 +33,14 @@ def export(export_path, contacts):
 
 
 if __name__ == "__main__":
-    export_path = sys.argv[1]
+    homedir = sys.argv[1]
+    export_path = sys.argv[2]
+
     contacts = [None]
-    if (len(sys.argv) > 2):
-        contacts = sys.argv[2:]
+    if (len(sys.argv) > 3):
+        contacts = sys.argv[3:]
 
     if os.environ['DEBUG'] == 'yes':
         print("contacts:", contacts, sep="\n")
 
-    export(export_path, contacts)
+    export(export_path, homedir, contacts)
