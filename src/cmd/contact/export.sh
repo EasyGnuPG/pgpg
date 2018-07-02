@@ -28,13 +28,8 @@ cmd_contact_export() {
     # set output to stdout if empty
     [[ -z "$output" ]] && output="-"
 
-    # set keys to $GPG_KEY if empty
-    get_gpg_key
-    local contacts=$@
-    [[ -z $contacts ]] && contacts=$GPG_KEY
-
     # export
-    call_gpg contact/export.py $output $contacts
+    call_gpg contact/export.py $output $@
     
     err=$?
     [[ $err == 0 ]] || fail "exporting keys failed"

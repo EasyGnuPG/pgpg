@@ -5,6 +5,7 @@ import os
 
 def export(export_path, contacts):
     c = gpg.Context(armor=True)
+
     if(export_path == "-"):
         export_file = sys.stdout
     else:
@@ -33,6 +34,8 @@ def export(export_path, contacts):
 
 if __name__ == "__main__":
     export_path = sys.argv[1]
-    contacts = sys.argv[2:]
+    contacts = [None]
+    if (len(sys.argv) > 2):
+        contacts = sys.argv[2:]
     print(contacts)
     export(export_path, contacts)
