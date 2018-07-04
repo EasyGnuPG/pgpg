@@ -16,7 +16,7 @@ def delete(contacts, force):
                     try:
                         ans = input("Delete this key from the keyring? (y/N)")
                     except EOFError:
-                        pass
+                        exit(0)
 
                 if(ans.lower() == 'y' or force):
                     c.op_delete(key, False)
