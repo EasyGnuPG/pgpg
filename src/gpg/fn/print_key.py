@@ -43,7 +43,7 @@ def print_key(identity):
     trust = filter(lambda t: eval("gpg.constants.validity." + t) ==
                    key.owner_trust, trust_map.keys())
     trust = trust_map[list(trust)[0]].lower()
-    trust = "trust: " + trust if trust != "unknown" else ""
+    trust = "trust: " + trust + "\n" if trust != "unknown" else ""
 
     # keys
     subkey_list = []
@@ -77,12 +77,12 @@ def print_key(identity):
     subkeys = "\n".join(subkey_list)
 
     # verifications
-    sign_list = []
+    sign_list = set({})
     for uid in key.uids:
         for sign in uid.signatures:
-            if sign.keyid != identity:
+            if sign.keyid == identity:
                 if not (sign.revoked or sign.expired):
-                    sign_list.append("certified by: " +
+                    sign_list.add("certified by: " +
                                      sign.uid + " " + sign.keyid)
 
     signatures = "\n".join(sign_list)
@@ -99,8 +99,8 @@ def print_key(identity):
     print("id: {identity}\n"
           "{all_uids}\n"
           "fpr: {fpr}\n"
-          "{trust}\n"
-          "{subkeys}"
+          "{trust}"
+          "{subkeys}\n"
           "{signatures}"
           .format_map(key_map))
 
