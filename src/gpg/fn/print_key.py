@@ -7,7 +7,7 @@ import time
 import gpg
 
 
-def print_key(identity):
+def print_key(identity, end=""):
     """
     print the details of key whose identitiy is passed
     """
@@ -30,6 +30,9 @@ def print_key(identity):
     # fpr
     fpr = " ".join(textwrap.wrap(key.fpr, 4))
 
+    # keyid
+    keyid = key.fpr[-16:]
+
     # trust
     trust_map = {
         "UNKNOWN": "UNKNOWN",
@@ -48,11 +51,12 @@ def print_key(identity):
     # keys
     subkey_list = []
     for subkey in key.subkeys:
-        start = time.strftime("%Y-%m-%d", time.localtime(subkey.timestamp))
-
+        starttime = time.strftime("%Y-%m-%d", time.localtime(subkey.timestamp))
+        endtime = time.strftime("%Y-%m-%d", time.localtime(subkey.expires)) 
+        
         # check if key never expires
-        endtime = time.localtime(subkey.expires)
-        end = time.strftime("%Y-%m-%d", endtime) if endtime != 0 else "never"
+        if subkey.expires == 0:
+            endtime = "never" 
 
         exp = "expired" if subkey.expired else ""
 
@@ -66,8 +70,8 @@ def print_key(identity):
         subkey_map = {
             "u": u,
             "subkey_id": subkey.keyid,
-            "start": start,
-            "end": end,
+            "start": starttime,
+            "end": endtime,
             "exp": exp
         }
 
@@ -80,7 +84,7 @@ def print_key(identity):
     sign_list = set({})
     for uid in key.uids:
         for sign in uid.signatures:
-            if (sign.keyid != identity and sign.uid):
+            if (sign.keyid != keyid and sign.uid):
                 if not (sign.revoked or sign.expired):
                     sign_list.add("certified by: " +
                                      sign.uid + " " + sign.keyid)
@@ -88,7 +92,7 @@ def print_key(identity):
     signatures = "\n".join(sign_list) + "\n" if sign_list else ""
 
     key_map = {
-        "identity": identity,
+        "identity": keyid,
         "all_uids": all_uids,
         "fpr": fpr,
         "trust": trust,
@@ -102,7 +106,7 @@ def print_key(identity):
           "{trust}"
           "{subkeys}"
           "{signatures}"
-          .format_map(key_map), end="")
+          .format_map(key_map), end=end)
 
 
 if __name__ == "__main__":

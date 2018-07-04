@@ -35,16 +35,7 @@ cmd_contact_list() {
         return
 
     # display the details of each key
-    local ids
-    ids=$(gpg --list-keys --with-colons "$@" | grep '^pub' | cut -d: -f5)
-    for id in $ids; do
-        echo
-        call_gpg fn/print_key.py $id
-        
-        local err=$?
-        [[ $err == 0 ]] || fail "Error getting key $id"
-        echo
-    done
+    call_gpg contact/list.py "$@"
 }
 
 #
