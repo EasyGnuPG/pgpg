@@ -20,7 +20,6 @@ def delete(contacts, force):
 
                 if(ans.lower() == 'y' or force):
                     c.op_delete(key, False)
-                    break
 
     except BaseException:
         if(os.environ['DEBUG'] == 'yes'):
