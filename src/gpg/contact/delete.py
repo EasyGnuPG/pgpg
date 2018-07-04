@@ -9,10 +9,14 @@ def delete(contacts, force):
         c = gpg.Context()
         for contact in contacts:
             keys = list(c.keylist(contact))
+            ans = "n"
             for key in keys:
                 if(not force):
                     print_key(key.fpr)
-                    ans = input("Delete this key from the keyring? (y/N)")
+                    try:
+                        ans = input("\nDelete this key from the keyring? (y/N)")
+                    except EOFError:
+                        pass
 
                 if(ans.lower() == 'y' or force):
                     c.op_delete(key, False)
@@ -25,6 +29,6 @@ def delete(contacts, force):
 
 
 if __name__ == "__main__":
-    force = sys.argv[1]
+    force = int(sys.argv[1])
     contacts = sys.argv[2:]
     delete(contacts, force)
