@@ -124,12 +124,12 @@ call_fn() {
 call_gpg() {
     local file=$1; shift
     local pyfile="$LIBDIR/gpg/$file"
-    export PYTHONPATH=$PYTHONPATH:"$LIBDIR/gpg/"
     [[ -f "$pyfile" ]] || fail "Cannot find python file: $pyfile"
     if is_true $DEBUG; then
         # User can override level by exporting GPGME_DEBUG
         [[ -z "$GPGME_DEBUG" ]] && export GPGME_DEBUG=2
     fi
+    export PYTHONPATH=$PYTHONPATH:"$LIBDIR/gpg/"
     python3 "$pyfile" "$@"
 }
 
