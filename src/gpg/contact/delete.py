@@ -12,9 +12,9 @@ def delete(contacts, force):
             ans = "n"
             for key in keys:
                 if(not force):
-                    print_key(key.fpr)
+                    print_key(key.fpr, end="\n")
                     try:
-                        ans = input("\nDelete this key from the keyring? (y/N)")
+                        ans = input("Delete this key from the keyring? (y/N)")
                     except EOFError:
                         pass
 

@@ -52,11 +52,11 @@ def print_key(identity, end=""):
     subkey_list = []
     for subkey in key.subkeys:
         starttime = time.strftime("%Y-%m-%d", time.localtime(subkey.timestamp))
-        endtime = time.strftime("%Y-%m-%d", time.localtime(subkey.expires)) 
-        
+        endtime = time.strftime("%Y-%m-%d", time.localtime(subkey.expires))
+
         # check if key never expires
         if subkey.expires == 0:
-            endtime = "never" 
+            endtime = "never"
 
         exp = "expired" if subkey.expired else ""
 
@@ -87,7 +87,7 @@ def print_key(identity, end=""):
             if (sign.keyid != keyid and sign.uid):
                 if not (sign.revoked or sign.expired):
                     sign_list.add("certified by: " +
-                                     sign.uid + " " + sign.keyid)
+                                  sign.uid + " " + sign.keyid)
 
     signatures = "\n".join(sign_list) + "\n" if sign_list else ""
 
