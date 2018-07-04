@@ -24,8 +24,8 @@ def print_key(identity):
         print(key, end='\n\n')
 
     # uid
-    uid_list = ["uid: " + user_id.uid for user_id in key.uids]
-    all_uids = "\n".join(uid_list)
+    uid_list = ["uid: " + user_id.uid + "\n" for user_id in key.uids]
+    all_uids = "".join(uid_list)
 
     # fpr
     fpr = " ".join(textwrap.wrap(key.fpr, 4))
@@ -74,18 +74,18 @@ def print_key(identity):
         subkey_list.append("{u}: {subkey_id} {start} {end} {exp}"
                            .format_map(subkey_map))
 
-    subkeys = "\n".join(subkey_list)
+    subkeys = "\n".join(subkey_list) + "\n" if subkey_list else ""
 
     # verifications
     sign_list = set({})
     for uid in key.uids:
         for sign in uid.signatures:
-            if sign.keyid == identity:
+            if (sign.keyid != identity and sign.uid):
                 if not (sign.revoked or sign.expired):
                     sign_list.add("certified by: " +
                                      sign.uid + " " + sign.keyid)
 
-    signatures = "\n".join(sign_list)
+    signatures = "\n".join(sign_list) + "\n" if sign_list else ""
 
     key_map = {
         "identity": identity,
@@ -97,12 +97,12 @@ def print_key(identity):
     }
 
     print("id: {identity}\n"
-          "{all_uids}\n"
+          "{all_uids}"
           "fpr: {fpr}\n"
           "{trust}"
-          "{subkeys}\n"
+          "{subkeys}"
           "{signatures}"
-          .format_map(key_map))
+          .format_map(key_map), end="")
 
 
 if __name__ == "__main__":
