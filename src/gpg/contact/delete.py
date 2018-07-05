@@ -11,18 +11,18 @@ def delete(contacts, force):
             keys = list(c.keylist(contact))
             ans = "n"
             for key in keys:
-                if(not force):
+                if not force:
                     print_key(key.fpr, end="\n")
                     try:
                         ans = input("Delete this contact? (y/N)")
                     except EOFError:
                         exit(0)
 
-                if(ans.lower() == 'y' or force):
+                if ans.lower() == 'y' or force:
                     c.op_delete(key, False)
 
     except BaseException:
-        if(os.environ['DEBUG'] == 'yes'):
+        if os.environ['DEBUG'] == 'yes':
             raise
         exit(2)
 
