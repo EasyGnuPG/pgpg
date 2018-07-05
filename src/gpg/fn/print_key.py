@@ -7,7 +7,7 @@ import time
 import gpg
 
 
-def print_key(identity):
+def print_key(identity, end=""):
     """
     print the details of key whose identitiy is passed
     """
@@ -24,11 +24,14 @@ def print_key(identity):
         print(key, end='\n\n')
 
     # uid
-    uid_list = ["uid: " + user_id.uid for user_id in key.uids]
-    all_uids = "\n".join(uid_list)
+    uid_list = ["uid: " + user_id.uid + "\n" for user_id in key.uids]
+    all_uids = "".join(uid_list)
 
     # fpr
     fpr = " ".join(textwrap.wrap(key.fpr, 4))
+
+    # keyid
+    keyid = key.fpr[-16:]
 
     # trust
     trust_map = {
@@ -43,16 +46,17 @@ def print_key(identity):
     trust = filter(lambda t: eval("gpg.constants.validity." + t) ==
                    key.owner_trust, trust_map.keys())
     trust = trust_map[list(trust)[0]].lower()
-    trust = "trust: " + trust if trust != "unknown" else ""
+    trust = "trust: " + trust + "\n" if trust != "unknown" else ""
 
     # keys
     subkey_list = []
     for subkey in key.subkeys:
-        start = time.strftime("%Y-%m-%d", time.localtime(subkey.timestamp))
+        starttime = time.strftime("%Y-%m-%d", time.localtime(subkey.timestamp))
+        endtime = time.strftime("%Y-%m-%d", time.localtime(subkey.expires))
 
         # check if key never expires
-        endtime = time.localtime(subkey.expires)
-        end = time.strftime("%Y-%m-%d", endtime) if endtime != 0 else "never"
+        if subkey.expires == 0:
+            endtime = "never"
 
         exp = "expired" if subkey.expired else ""
 
@@ -66,29 +70,29 @@ def print_key(identity):
         subkey_map = {
             "u": u,
             "subkey_id": subkey.keyid,
-            "start": start,
-            "end": end,
+            "start": starttime,
+            "end": endtime,
             "exp": exp
         }
 
         subkey_list.append("{u}: {subkey_id} {start} {end} {exp}"
                            .format_map(subkey_map))
 
-    subkeys = "\n".join(subkey_list)
+    subkeys = "\n".join(subkey_list) + "\n" if subkey_list else ""
 
     # verifications
-    sign_list = []
+    sign_list = set({})
     for uid in key.uids:
         for sign in uid.signatures:
-            if sign.keyid != identity:
+            if (sign.keyid != keyid and sign.uid):
                 if not (sign.revoked or sign.expired):
-                    sign_list.append("certified by: " +
-                                     sign.uid + " " + sign.keyid)
+                    sign_list.add("certified by: " +
+                                  sign.uid + " " + sign.keyid)
 
-    signatures = "\n".join(sign_list)
+    signatures = "\n".join(sign_list) + "\n" if sign_list else ""
 
     key_map = {
-        "identity": identity,
+        "identity": keyid,
         "all_uids": all_uids,
         "fpr": fpr,
         "trust": trust,
@@ -97,12 +101,12 @@ def print_key(identity):
     }
 
     print("id: {identity}\n"
-          "{all_uids}\n"
+          "{all_uids}"
           "fpr: {fpr}\n"
-          "{trust}\n"
+          "{trust}"
           "{subkeys}"
           "{signatures}"
-          .format_map(key_map))
+          .format_map(key_map), end=end)
 
 
 if __name__ == "__main__":

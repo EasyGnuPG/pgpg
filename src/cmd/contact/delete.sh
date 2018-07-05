@@ -22,11 +22,10 @@ cmd_contact_delete() {
     [[ $err != 0 ]] && fail "Usage:\n$(cmd_contact_delete_help)"
     [[ -z $1 ]] && fail "Usage:\n$(cmd_contact_delete_help)"
 
-    if [[ $force == 0 ]]; then
-        gpg --delete-keys "$@"
-    else
-        gpg --batch --no-tty --yes --delete-keys "$@"
-    fi
+    call_gpg contact/delete.py $force "$@"
+    
+    err=$?
+    [[ $err == 0 ]] || fail "Deleting contacts failed!"
 }
 
 #

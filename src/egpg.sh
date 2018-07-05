@@ -129,6 +129,7 @@ call_gpg() {
         # User can override level by exporting GPGME_DEBUG
         [[ -z "$GPGME_DEBUG" ]] && export GPGME_DEBUG=2
     fi
+    export PYTHONPATH=$PYTHONPATH:"$LIBDIR/gpg/"
     python3 "$pyfile" "$@"
 }
 
