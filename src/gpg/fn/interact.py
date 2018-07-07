@@ -14,13 +14,18 @@ class KeyEditor(object):
             sys.stderr.write("Code: {status}, args: {args}\n"
                              .format(status=status, args=args))
 
-        if "edit" in args:
+        # There may be multiple attempts to pinentry
+        if status == "PINENTRY_LAUNCHED":
+            return None
+
+        if self.cmds[self.step].strip() != "":
             cmd = self.cmds[self.step]
-            self.step += 1
-            if self.step == len(self.cmds):
-                self.done = True
         else:
             cmd = None
+
+        self.step += 1
+        if self.step == len(self.cmds):
+                self.done = True
 
         if os.environ["DEBUG"] == "yes":
             sys.stderr.write("cmd: {cmd}\n".format(cmd=cmd))
@@ -38,9 +43,15 @@ def interact(key, commands):
         keys = list(c.keylist(key))
         if os.environ["DEBUG"] == "yes":
             print(keys, end="\n\n")
+
+        if len(keys) == 0:
+            sys.stderr.write("No matching key found")
+            exit(1)
+
         if len(keys) > 1:
             sys.stderr.write("More than one matching keys")
             exit(1)
+
         editor = KeyEditor(commands, 2)
         c.interact(keys[0], editor.edit_fnc)
         assert editor.done
@@ -52,6 +63,10 @@ def interact(key, commands):
 
 
 if __name__ == "__main__":
+    """
+    If we need to send back None in the interaction with gpg
+    engine, pass empty string ("") as an argument.
+    """
     key = sys.argv[1]
     if os.environ["DEBUG"] == "yes":
         print(sys.argv)

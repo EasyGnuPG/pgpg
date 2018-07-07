@@ -28,10 +28,13 @@ Try first:  $(basename $0) key join
     local today=$(date -d $(date +%F) +%s)
     time=$(( ( $expday - $today ) / 86400 ))
 
-    local commands=";expire;$time;y;key 1;expire;$time;y;key 1;save"
-    commands=$(echo "$commands" | tr ';' "\n")
-    echo -e "$commands" | gpg --no-tty --command-fd=0 --key-edit $GPG_KEY 2>/dev/null
+    # blank quotes ("") => None
+    local commands=("" "expire" "" "$time" "" "key 1" "" "expire" "" "$time" "" "save" "" "")
+    call_gpg fn/interact.py "$GPG_KEY" "${commands[@]}"
     call_fn gpg_send_keys $GPG_KEY
+
+    err=$?
+    [[ $err == 0 ]] || fail "error renewing $GPG_KEY"
 
     call cmd_key_list
 }
