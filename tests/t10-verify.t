@@ -25,7 +25,7 @@ test_expect_success 'egpg verify (missing file)' '
 
 test_expect_success 'egpg verify' '
     echo "Test 1" > test1.txt &&
-    egpg verify test1.txt.signature 2>&1 | grep "Good signature from \"Test 1 <test1@example.org>\""
+    egpg verify test1.txt.signature 2>&1 | grep "gpg: Good signature from \"Test 1 <test1@example.org>\""
 '
 
 test_done

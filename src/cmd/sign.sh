@@ -15,10 +15,8 @@ cmd_sign() {
 
     # sign
     gnupghome_setup
-    call_gpg sign.py $GPG_KEY "$file"
-
-    local err=$?
-    [[ $err == 0 ]] || fail "Signing failed"
+    gpg --local-user $GPG_KEY \
+        --detach-sign --armor --output "$file.signature" "$file"
     gnupghome_reset
 }
 

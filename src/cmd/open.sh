@@ -17,18 +17,13 @@ cmd_open() {
 
     local output=${file%.sealed}
     [[ "$output" != "$file" ]] || fail "The given file does not end in '.sealed'."
-
-    if [[ -f "$output" ]]; then
-        yesno "File '$output' exists. Overwrite?" || return 1
-    fi
+    [[ -f "$output" ]] && yesno "File '$output' exists. Overwrite?" || return 1
 
     # decrypt and verify
     gnupghome_setup
-    call_gpg open.py "$file" "$output" # $output will be overwritten if exists
-
-    local err=$?
-    [[ $err == 0 ]] || fail "Error opening $file"
-
+    gpg --keyserver "$KEYSERVER" \
+        --keyserver-options auto-key-retrieve,honor-keyserver-url \
+        --decrypt --output "$output" "$file"
     gnupghome_reset
 }
 
