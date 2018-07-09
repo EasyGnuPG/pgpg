@@ -35,13 +35,8 @@ cmd_contact_trust() {
         *) fail "Unknown trust level: $level" ;;
     esac
 
-    # blank quotes "" => None
-    local commands=("" trust "" $level "" quit "" "")
-    call_gpg fn/interact.py "$contact" "${commands[@]}"
+    call_gpg contact/trust.py "$contact" "$level"
     call cmd_contact_list "$contact" | grep -e "^uid:" -e "^trust:" -e "^\$"
-
-    err=$?
-    [[ $err == 0 ]] || fail "error changing trust!"
 }
 
 #
