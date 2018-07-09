@@ -121,18 +121,6 @@ call_fn() {
     $fn "$@"
 }
 
-call_gpg() {
-    local file=$1; shift
-    local pyfile="$LIBDIR/gpg/$file"
-    [[ -f "$pyfile" ]] || fail "Cannot find python file: $pyfile"
-    if is_true $DEBUG; then
-        # User can override level by exporting GPGME_DEBUG
-        [[ -z "$GPGME_DEBUG" ]] && export GPGME_DEBUG=2
-    fi
-    export PYTHONPATH=$PYTHONPATH:"$LIBDIR/gpg/"
-    python3 "$pyfile" "$@"
-}
-
 call_ext() {
     local cmd=$1; shift
 
@@ -196,8 +184,8 @@ config() {
     DEBUG=${DEBUG:-no}
 
     export GNUPGHOME
-    export GPG_TTY=$(tty)
     export DEBUG
+    export GPG_TTY=$(tty)
 
     # create the config file, if it does not exist
     local gpghome="$GNUPGHOME"

@@ -14,11 +14,7 @@ cmd_contact_fetchuri() {
     workdir_make
     cd "$WORKDIR"
     wget -q $@
-    call_gpg contact/import.py *
-
-    local err=$?
-    [[ $err == 0 ]] || fail "Importing contacts failed"
-
+    gpg --import *
     workdir_clear
 }
 

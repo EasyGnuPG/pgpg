@@ -27,11 +27,7 @@ Are you sure about this?" || return 1
 
     # import the revocation certificate
     sed -i "$revcert" -e "s/^:---/---/"
-    call_gpg key/rev.py "$revcert"
-    
-    local err=$?
-    [[ $err == 0 ]] || fail "Key revocation failed"
-    
+    gpg --import "$revcert"
     call_fn gpg_send_keys $GPG_KEY
 }
 
