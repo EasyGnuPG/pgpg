@@ -1,12 +1,15 @@
+import os
 import sys
 from fn.interact import interact
 
 
 def trust(contact, level):
-    commands = ";trust;;{level};;quit;;".format(level=level).split(";")
+    commands = [None, "trust", None, level, None, "quit", None, None]
     try:
         interact(contact, commands)
     except BaseException:
+        if os.environ["DEBUG"] == "yes":
+            raise
         print("Error changing trust",
               file=sys.stderr, flush=True)
         exit(1)

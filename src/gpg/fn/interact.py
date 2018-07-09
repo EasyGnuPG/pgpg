@@ -18,19 +18,15 @@ class KeyEditor(object):
         if status == "PINENTRY_LAUNCHED":
             return None
 
-        if self.cmds[self.step].strip() != "":
-            cmd = self.cmds[self.step]
-        else:
-            cmd = None
-
+        cmd = self.cmds[self.step]
+        
         self.step += 1
-        if self.step == len(self.cmds):
-                self.done = True
+        self.done = len(self.cmds) == self.step
 
         if os.environ["DEBUG"] == "yes":
             sys.stderr.write("cmd: {cmd}\n".format(cmd=cmd))
             try:
-                input("Debug mode press any key to continue!")
+                input("Debug mode: Press any key to continue!")
             except EOFError:
                 pass
 
@@ -60,15 +56,3 @@ def interact(key, commands):
         if os.environ["DEBUG"] == "yes":
             raise
         exit(2)
-
-
-if __name__ == "__main__":
-    """
-    If we need to send back None in the interaction with gpg
-    engine, pass empty string ("") as an argument.
-    """
-    key = sys.argv[1]
-    if os.environ["DEBUG"] == "yes":
-        print(sys.argv)
-    commands = sys.argv[2:]
-    interact(key, commands)
