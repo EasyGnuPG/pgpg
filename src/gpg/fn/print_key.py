@@ -1,10 +1,11 @@
 # Print the details of the given key id.
-import os
 import sys
 import textwrap
 import time
 
 import gpg
+
+from fn.auxilary import fail, print_debug
 
 
 def print_key(identity, end=""):
@@ -20,13 +21,11 @@ def print_key(identity, end=""):
             error_msg = r"No key matching {identity}"
         else:
             error_msg = r"More than 1 matching keys for {identity}"
-        print(error_msg.format(identity=identity), file=sys.stderr, flush=True)
-        exit(1)
+        fail(error_msg.format(identity=identity))
 
     key = key[0]
 
-    if os.environ["DEBUG"] == "yes":
-        print(key, end='\n\n')
+    print_debug(key, end='\n\n')
 
     # uid
     uid_list = ["uid: " + user_id.uid + "\n" for user_id in key.uids]
@@ -86,7 +85,7 @@ def print_key(identity, end=""):
     subkeys = "\n".join(subkey_list) + "\n" if subkey_list else ""
 
     # verifications
-    sign_list = set({})
+    sign_list = set()
     for uid in key.uids:
         for sign in uid.signatures:
             if sign.keyid != keyid and sign.uid:
@@ -119,7 +118,4 @@ if __name__ == "__main__":
         identity = sys.argv[1]
         print_key(identity)
     except gpg.errors.GpgError as e:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        print(e, file=sys.stderr, flush=True)
-        exit(1)
+        fail(e)

@@ -1,18 +1,15 @@
-import gpg
-import os
 import sys
+
+import gpg
+
+from fn.auxilary import handle_exception
 from fn.interact import interact
 
 
+@handle_exception(gpg.errors.GpgError)
 def trust(contact, level):
     commands = [None, "trust", None, level, None, "quit", None, None]
-    try:
-        interact(contact, commands)
-    except gpg.errors.GpgError as e:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        print(e, file=sys.stderr, flush=True)
-        exit(1)
+    interact(contact, commands)
 
 
 if __name__ == "__main__":

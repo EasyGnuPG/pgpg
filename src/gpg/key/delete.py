@@ -1,20 +1,16 @@
-import gpg
 import sys
-import os
+
+import gpg
+
+from fn.auxilary import handle_exception
 
 
+@handle_exception(gpg.errors.GpgError)
 def delete(key_id):
-    try:
-        c = gpg.Context()
-        keys = list(c.keylist(key_id))
-        for key in keys:
-            c.op_delete(key, True)
-
-    except gpg.errors.GpgError as e:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        print(e, file=sys.stderr, flush=True)
-        exit(1)
+    c = gpg.Context()
+    keys = list(c.keylist(key_id))
+    for key in keys:
+        c.op_delete(key, True)
 
 
 if __name__ == "__main__":

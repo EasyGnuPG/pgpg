@@ -1,31 +1,27 @@
-import gpg
 import sys
-import os
+
+import gpg
+
+from fn.auxilary import handle_exception
 from fn.print_key import print_key
 
 
+@handle_exception(gpg.errors.GpgError)
 def delete(contacts, force):
-    try:
-        c = gpg.Context()
-        for contact in contacts:
-            keys = list(c.keylist(contact))
-            ans = "n"
-            for key in keys:
-                if not force:
-                    print_key(key.fpr, end="\n")
-                    try:
-                        ans = input("Delete this contact? (y/N)")
-                    except EOFError:
-                        exit(0)
+    c = gpg.Context()
+    for contact in contacts:
+        keys = list(c.keylist(contact))
+        ans = "n"
+        for key in keys:
+            if not force:
+                print_key(key.fpr, end="\n")
+                try:
+                    ans = input("Delete this contact? (y/N)")
+                except EOFError:
+                    exit(0)
 
-                if ans.lower() == 'y' or force:
-                    c.op_delete(key, False)
-
-    except gpg.errors.GpgError as e:
-        if os.environ['DEBUG'] == 'yes':
-            raise
-        print(e, file=sys.stderr, flush=True)
-        exit(1)
+            if ans.lower() == 'y' or force:
+                c.op_delete(key, False)
 
 
 if __name__ == "__main__":

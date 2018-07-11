@@ -1,16 +1,16 @@
 import sys
-import gpg
-import time
 import textwrap
+import time
+
+import gpg
+
+from fn.auxilary import handle_exception
 
 
+@handle_exception(gpg.errors.GpgError, PermissionError, FileNotFoundError)
 def verify(signature_file, filename):
     c = gpg.Context()
-    try:
-        _, result = c.verify(open(filename), open(signature_file))
-    except (gpg.errors.BadSignatures, PermissionError, FileNotFoundError) as e:
-        print(e, file=sys.stderr, flush=True)
-        exit(1)
+    _, result = c.verify(open(filename), open(signature_file))
 
     for signature in result.signatures:
         message = '''

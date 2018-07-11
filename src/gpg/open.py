@@ -1,8 +1,10 @@
-import gpg
-import os
 import sys
-import time
 import textwrap
+import time
+
+import gpg
+
+from fn.auxilary import handle_exception, print_debug
 
 
 def print_signatures(verify_result):
@@ -23,36 +25,19 @@ def print_signatures(verify_result):
         print(textwrap.dedent(message))
 
 
+@handle_exception(gpg.errors.GpgError, PermissionError, FileNotFoundError)
 def open_file(sealed_file_path, output_file_path):
-    """
-    sign and encrypt file_path to the recipents
-    """
+    c = gpg.Context()
+    with open(sealed_file_path, "rb") as cfile:
+        plaintext, result, verify_result = c.decrypt(
+            cfile, verify=True)
 
-    try:
-        c = gpg.Context()
-        with open(sealed_file_path, "rb") as cfile:
-            try:
-                plaintext, result, verify_result = c.decrypt(
-                    cfile, verify=True)
+        print_debug(verify_result, result)
 
-                if os.environ['DEBUG'] == 'yes':
-                    print(verify_result, result)
+        print_signatures(verify_result)
 
-                print_signatures(verify_result)
-
-            except gpg.errors.BadSignatures:
-                print("Could not verify signatures",
-                      file=sys.stderr, flush=True)
-                exit(1)
-
-        with open(output_file_path, "wb") as nfile:
-            nfile.write(plaintext)
-
-    except (gpg.errors.GpgError, PermissionError, FileNotFoundError) as e:
-        if os.environ['DEBUG'] == 'yes':
-            raise
-        print(e, file=sys.stderr, flush=True)
-        exit(1)
+    with open(output_file_path, "wb") as nfile:
+        nfile.write(plaintext)
 
 
 if __name__ == "__main__":
