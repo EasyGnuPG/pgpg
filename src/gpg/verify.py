@@ -5,36 +5,23 @@ import textwrap
 
 
 def verify(signature_file, filename):
-    """
-    verify the signature
-    signature_file has the detached signature
-    filename has the name of the file which is signed
-    """
-
     c = gpg.Context()
-
     try:
         _, result = c.verify(open(filename), open(signature_file))
-        verified = True
-    except gpg.errors.BadSignatures as e:
-        verified = False
-        print(e)
+    except (gpg.errors.BadSignatures, PermissionError, FileNotFoundError) as e:
+        print(e, file=sys.stderr, flush=True)
+        exit(1)
 
-    if verified is True:
-        for signature in result.signatures:
-            user = c.get_key(signature.fpr).uids[0].uid
-            fpr = signature.fpr
-            signed_time = time.ctime(signature.timestamp)
+    for signature in result.signatures:
+        message = '''
+                    Good signature from "{user}"
+                    with key {fingerprint}
+                    made at {time}
+                    '''.format(user=c.get_key(signature.fpr).uids[0].uid,
+                               fingerprint=signature.fpr,
+                               time=time.ctime(signature.timestamp))
 
-            message = '''
-                      Good signature from "{user}"
-                      with key {fingerprint}
-                      made at {time}
-                      '''.format(user=user,
-                                 fingerprint=fpr,
-                                 time=signed_time)
-
-            print(textwrap.dedent(message))
+        print(textwrap.dedent(message))
 
 
 if __name__ == "__main__":

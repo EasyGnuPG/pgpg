@@ -10,9 +10,10 @@ def passwd(keyid):
         key = keys[0]
         c.op_passwd(key, 0)
 
-    except BaseException:
+    except gpg.errors.GpgError as e:
         if os.environ["DEBUG"] == "yes":
             raise
+        print(e, file=sys.stderr, flush=True)
         exit(1)
 
 

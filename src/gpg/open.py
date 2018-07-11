@@ -41,17 +41,18 @@ def open_file(sealed_file_path, output_file_path):
                 print_signatures(verify_result)
 
             except gpg.errors.BadSignatures:
-                print("Could not verify signatures")
-                exit(3)
+                print("Could not verify signatures",
+                      file=sys.stderr, flush=True)
+                exit(1)
 
         with open(output_file_path, "wb") as nfile:
             nfile.write(plaintext)
 
-    except BaseException:
+    except (gpg.errors.GpgError, PermissionError, FileNotFoundError) as e:
         if os.environ['DEBUG'] == 'yes':
             raise
-        else:
-            exit(2)
+        print(e, file=sys.stderr, flush=True)
+        exit(1)
 
 
 if __name__ == "__main__":

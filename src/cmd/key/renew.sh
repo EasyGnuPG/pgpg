@@ -28,7 +28,7 @@ Try first:  $(basename $0) key join
     local today=$(date -d $(date +%F) +%s)
     time=$(( ( $expday - $today ) / 86400 ))
 
-    call_gpg key/renew.py "$GPG_KEY" "$time"
+    call_gpg key/renew.py "$GPG_KEY" "$time" || fail ""
     call_fn gpg_send_keys $GPG_KEY
 
     call cmd_key_list

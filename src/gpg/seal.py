@@ -89,12 +89,13 @@ def seal(file_path, recipients):
                             infile, recipients=seal_list, sign=True,
                             sink=outfile, always_trust=True)
                     else:
-                        exit(3)
+                        exit(1)
 
-    except BaseException:
+    except (gpg.errors.GpgError, PermissionError, FileNotFoundError) as e:
         if os.environ['DEBUG'] == 'yes':
             raise
-        exit(2)
+        print(e, file=sys.stderr, flush=True)
+        exit(1)
 
 
 if __name__ == "__main__":

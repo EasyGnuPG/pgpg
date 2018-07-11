@@ -59,10 +59,7 @@ cmd_key_gen() {
 
     # generate the key
     haveged_start
-    call_gpg key/gen.py "$PARAMETERS"
-    
-    local err=$?
-    [[ $err == 0 ]] || fail "Key generation failed"
+    call_gpg key/gen.py "$PARAMETERS" || fail ""
     haveged_stop
 
     # restrict expiration time to 1 month from now

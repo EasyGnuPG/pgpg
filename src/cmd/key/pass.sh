@@ -18,9 +18,6 @@ Try first:  $(basename $0) key join
 "
 
     call_gpg key/pass.py $GPG_KEY
-
-    local err=$? 
-    [[ $err == 0 ]] || fail "Error changing passphrase for $GPG_KEY"
 }
 
 #

@@ -21,10 +21,11 @@ def delete(contacts, force):
                 if ans.lower() == 'y' or force:
                     c.op_delete(key, False)
 
-    except BaseException:
+    except gpg.errors.GpgError as e:
         if os.environ['DEBUG'] == 'yes':
             raise
-        exit(2)
+        print(e, file=sys.stderr, flush=True)
+        exit(1)
 
 
 if __name__ == "__main__":

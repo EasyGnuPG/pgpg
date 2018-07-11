@@ -14,13 +14,14 @@ def list_contacts(contacts):
             key_set.update(c.keylist(contact))
 
         if len(list(key_set)) == 0:
-            print("No matching contacts found!")
+            print("No matching contacts found!",
+                  file=sys.stderr, flush=True)
             exit(0)
 
         for key in key_set:
             print_key(key.fpr, end="\n")
-    
-    except BaseException:
+
+    except gpg.errors.GpgError:
         if os.environ["DEBUG"] == 'yes':
             raise
         exit(1)

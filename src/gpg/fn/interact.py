@@ -16,12 +16,11 @@ class KeyEditor(object):
 
         # There may be multiple attempts to pinentry
         if status == "PINENTRY_LAUNCHED":
-            return None
-
-        cmd = self.cmds[self.step]
-        
-        self.step += 1
-        self.done = len(self.cmds) == self.step
+            cmd = None
+        else:
+            cmd = self.cmds[self.step]
+            self.step += 1
+            self.done = len(self.cmds) == self.step
 
         if os.environ["DEBUG"] == "yes":
             sys.stderr.write("cmd: {cmd}\n".format(cmd=cmd))
@@ -40,19 +39,17 @@ def interact(key, commands):
         if os.environ["DEBUG"] == "yes":
             print(keys, end="\n\n")
 
-        if len(keys) == 0:
-            sys.stderr.write("No matching key found")
-            exit(1)
-
-        if len(keys) > 1:
-            sys.stderr.write("More than one matching keys")
+        if len(keys) != 1:
+            if len(keys) == 0:
+                error_msg = r"No key matching {key}"
+            else:
+                error_msg = r"More than 1 matching keys for {key}"
+            print(error_msg.format(key=key), file=sys.stderr, flush=True)
             exit(1)
 
         editor = KeyEditor(commands, 2)
         c.interact(keys[0], editor.edit_fnc)
         assert editor.done
 
-    except BaseException:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        exit(2)
+    except (gpg.errors.GpgError, AssertionError):
+        raise

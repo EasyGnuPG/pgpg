@@ -1,5 +1,6 @@
 import os
 import sys
+import gpg
 from fn.interact import interact
 
 
@@ -9,11 +10,10 @@ def renew(key, time):
                 "save", None, None]
     try:
         interact(key, commands)
-    except BaseException:
+    except gpg.errors.GpgError as e:
         if os.environ["DEBUG"] == "yes":
             raise
-        print("Error renewing {key}".format(key=key),
-              file=sys.stderr, flush=True)
+        print(e, file=sys.stderr, flush=True)
         exit(1)
 
 

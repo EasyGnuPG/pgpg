@@ -10,11 +10,14 @@ def import_contact(import_path):
             c.op_import(import_file)
             result = c.op_import_result()
             if result is None:
+                print("Could not import contact", file=sys.stderr,
+                      flush=True)
                 exit(1)
-    except BaseException:
+    except (gpg.errors.GpgError, FileNotFoundError) as e:
         if os.environ['DEBUG'] == 'yes':
             raise
-        exit(2)
+        print(e, file=sys.stderr, flush=True)
+        exit(1)
 
 
 if __name__ == "__main__":
