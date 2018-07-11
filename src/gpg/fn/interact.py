@@ -14,18 +14,19 @@ class KeyEditor(object):
             sys.stderr.write("Code: {status}, args: {args}\n"
                              .format(status=status, args=args))
 
-        if "edit" in args:
-            cmd = self.cmds[self.step]
-            self.step += 1
-            if self.step == len(self.cmds):
-                self.done = True
-        else:
-            cmd = None
+        # There may be multiple attempts to pinentry
+        if status == "PINENTRY_LAUNCHED":
+            return None
+
+        cmd = self.cmds[self.step]
+        
+        self.step += 1
+        self.done = len(self.cmds) == self.step
 
         if os.environ["DEBUG"] == "yes":
             sys.stderr.write("cmd: {cmd}\n".format(cmd=cmd))
             try:
-                input("Debug mode press any key to continue!")
+                input("Debug mode: Press any key to continue!")
             except EOFError:
                 pass
 
@@ -38,9 +39,15 @@ def interact(key, commands):
         keys = list(c.keylist(key))
         if os.environ["DEBUG"] == "yes":
             print(keys, end="\n\n")
+
+        if len(keys) == 0:
+            sys.stderr.write("No matching key found")
+            exit(1)
+
         if len(keys) > 1:
             sys.stderr.write("More than one matching keys")
             exit(1)
+
         editor = KeyEditor(commands, 2)
         c.interact(keys[0], editor.edit_fnc)
         assert editor.done
@@ -49,11 +56,3 @@ def interact(key, commands):
         if os.environ["DEBUG"] == "yes":
             raise
         exit(2)
-
-
-if __name__ == "__main__":
-    key = sys.argv[1]
-    if os.environ["DEBUG"] == "yes":
-        print(sys.argv)
-    commands = sys.argv[2:]
-    interact(key, commands)
