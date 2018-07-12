@@ -21,6 +21,11 @@ def fail(e):
 
 
 def handle_exception(*exceptions):
+    """
+    Used as a decorator.
+    Takes exeptions and a function,
+    returns function warpped with try except and debug functionality
+    """
     def wrapper(function):
         def customized_function(*args, **kwargs):
             try:
