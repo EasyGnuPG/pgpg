@@ -3,7 +3,7 @@ import sys
 
 import gpg
 
-from fn.auxilary import handle_exception, print_debug, print_error
+from fn.auxiliary import handle_exception, print_debug, print_error
 
 
 @handle_exception(PermissionError, gpg.errors.GpgError)

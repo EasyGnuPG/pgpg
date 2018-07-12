@@ -5,7 +5,7 @@ import time
 
 import gpg
 
-from fn.auxilary import fail, print_debug
+from fn.auxiliary import fail, print_debug
 
 
 def print_key(identity, end=""):

@@ -4,7 +4,7 @@ import time
 
 import gpg
 
-from fn.auxilary import handle_exception, print_debug
+from fn.auxiliary import handle_exception, print_debug
 
 
 def print_signatures(verify_result):

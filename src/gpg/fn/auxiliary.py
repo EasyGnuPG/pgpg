@@ -1,7 +1,7 @@
 import os
 import sys
 
-debug = os.environ["DEBUG"] == "yes"
+debug = True if os.environ["DEBUG"] == "yes" else False
 
 
 def print_debug(*args, **kwargs):

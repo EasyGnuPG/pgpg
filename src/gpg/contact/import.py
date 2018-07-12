@@ -2,7 +2,7 @@ import sys
 
 import gpg
 
-from fn.auxilary import fail, handle_exception
+from fn.auxiliary import fail, handle_exception
 
 
 @handle_exception(gpg.errors.GpgError, FileNotFoundError)

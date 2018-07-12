@@ -1,6 +1,6 @@
 import gpg
 
-from fn.auxilary import debug, fail, handle_exception, print_debug
+from fn.auxiliary import debug, fail, handle_exception, print_debug
 
 
 class KeyEditor(object):

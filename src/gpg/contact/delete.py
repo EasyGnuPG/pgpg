@@ -2,7 +2,7 @@ import sys
 
 import gpg
 
-from fn.auxilary import handle_exception
+from fn.auxiliary import handle_exception
 from fn.print_key import print_key
 
 
