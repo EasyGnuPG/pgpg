@@ -1,19 +1,16 @@
-import gpg
 import sys
-import os
+
+import gpg
+
+from fn.auxiliary import handle_exception
 
 
+@handle_exception(gpg.errors.GpgError)
 def passwd(keyid):
-    try:
-        c = gpg.Context()
-        keys = list(c.keylist(keyid))
-        key = keys[0]
-        c.op_passwd(key, 0)
-
-    except BaseException:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        exit(1)
+    c = gpg.Context()
+    keys = list(c.keylist(keyid))
+    key = keys[0]
+    c.op_passwd(key, 0)
 
 
 if __name__ == "__main__":

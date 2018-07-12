@@ -25,11 +25,10 @@ cmd_seal() {
     # sign and encrypt
     gnupghome_setup
     call_gpg seal.py "$file" "$recipients"
-    
     local err=$?
-    [[ $err == 0 ]] || fail "Error encrypting $file"
-
     gnupghome_reset
+    
+    [[ $err == 0 ]] || fail ""
 
     [[ -s "$file.sealed" ]] || rm -f "$file.sealed"
     [[ -f "$file.sealed" ]] && shred "$file"

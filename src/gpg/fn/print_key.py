@@ -1,10 +1,11 @@
 # Print the details of the given key id.
-import os
 import sys
 import textwrap
 import time
 
 import gpg
+
+from fn.auxiliary import fail, print_debug
 
 
 def print_key(identity, end=""):
@@ -15,13 +16,16 @@ def print_key(identity, end=""):
     key = list(c.keylist(identity, mode=gpg.constants.keylist.mode.SIGS))
 
     # exit with status 1 if more than one key matches are found for identity
-    if len(key) > 1:
-        exit(1)
-    else:
-        key = key[0]
+    if len(key) != 1:
+        if len(key) == 0:
+            error_msg = r"No key matching {identity}"
+        else:
+            error_msg = r"More than 1 matching keys for {identity}"
+        fail(error_msg.format(identity=identity))
 
-    if os.environ["DEBUG"] == "yes":
-        print(key, end='\n\n')
+    key = key[0]
+
+    print_debug(key, end='\n\n')
 
     # uid
     uid_list = ["uid: " + user_id.uid + "\n" for user_id in key.uids]
@@ -81,10 +85,10 @@ def print_key(identity, end=""):
     subkeys = "\n".join(subkey_list) + "\n" if subkey_list else ""
 
     # verifications
-    sign_list = set({})
+    sign_list = set()
     for uid in key.uids:
         for sign in uid.signatures:
-            if (sign.keyid != keyid and sign.uid):
+            if sign.keyid != keyid and sign.uid:
                 if not (sign.revoked or sign.expired):
                     sign_list.add("certified by: " +
                                   sign.uid + " " + sign.keyid)
@@ -113,7 +117,5 @@ if __name__ == "__main__":
     try:
         identity = sys.argv[1]
         print_key(identity)
-    except BaseException:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        exit(2)
+    except gpg.errors.GpgError as e:
+        fail(e)

@@ -1,29 +1,25 @@
-import gpg
 import sys
-import os
+
+import gpg
+
+from fn.auxiliary import fail, handle_exception, print_debug
 from fn.print_key import print_key
 
 
+@handle_exception(gpg.errors.GpgError)
 def list_contacts(contacts):
-    try:
-        c = gpg.Context()
+    c = gpg.Context()
 
-        key_set = set()
+    key_set = set()
 
-        for contact in contacts:
-            key_set.update(c.keylist(contact))
+    for contact in contacts:
+        key_set.update(c.keylist(contact))
 
-        if len(list(key_set)) == 0:
-            print("No matching contacts found!")
-            exit(0)
+    if len(list(key_set)) == 0:
+        fail("No matching contacts found!")
 
-        for key in key_set:
-            print_key(key.fpr, end="\n")
-    
-    except BaseException:
-        if os.environ["DEBUG"] == 'yes':
-            raise
-        exit(1)
+    for key in key_set:
+        print_key(key.fpr, end="\n")
 
 
 if __name__ == "__main__":
@@ -31,7 +27,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         contacts = sys.argv[1:]
 
-    if os.environ['DEBUG'] == 'yes':
-        print("contacts:", contacts, sep="\n")
+    print_debug("contacts:", contacts, sep="\n")
 
     list_contacts(contacts)

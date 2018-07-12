@@ -1,14 +1,11 @@
-import gpg
-import os
 import sys
+
+import gpg
+
+from fn.auxiliary import fail, handle_exception
 
 
 def in_keyring(recipient):
-    """
-    Check if a valid key is present in the keyring matching
-    recipient
-    """
-
     matched_keys = list(gpg.Context().keylist(recipient))
     valid_keys = list(filter(lambda k: k.revoked == 0 and k.expired == 0,
                              matched_keys))
@@ -19,11 +16,6 @@ def in_keyring(recipient):
 
 
 def get_selected_key(keys):
-    """
-    In case of multiple matches list the keys and confirm from the user.
-    Currently displaying all at once; no N)ext functionality
-    """
-
     all_keys = list(keys)
     valid_keys = list(filter(
         lambda k: k.revoked == 0 and k.expired == 0, all_keys))
@@ -51,50 +43,41 @@ def get_selected_key(keys):
             print("Please enter a valid choice")
 
 
+@handle_exception(gpg.errors.GpgError, PermissionError, FileNotFoundError)
 def seal(file_path, recipients):
-    """
-    sign and encrypt file_path to the recipents
-    """
+    c = gpg.Context(armor=True)
+    c.signers = list(c.keylist(pattern=None, secret=True))
+    seal_list = []
 
-    try:
-        c = gpg.Context(armor=True)
-        c.signers = list(c.keylist(pattern=None, secret=True))
-        seal_list = []
+    # prepare the list
+    for recipient in recipients:
+        keys = c.keylist(pattern=recipient)
+        chosen_keys = get_selected_key(list(keys))
+        seal_list.extend(chosen_keys)
 
-        # prepare the list
-        for recipient in recipients:
-            keys = c.keylist(pattern=recipient)
-            chosen_keys = get_selected_key(list(keys))
-            seal_list.extend(chosen_keys)
+    # print the list
+    print("The following recipients were selected:")
+    for sno, key in enumerate(seal_list):
+        print(str(sno+1) + ")", key.uids[0].uid, key.fpr)
 
-        # print the list
-        print("The following recipients were selected:")
-        for sno, key in enumerate(seal_list):
-            print(str(sno+1) + ")", key.uids[0].uid, key.fpr)
-
-        # encrypt
-        seal_path = file_path+".sealed"
-        with open(file_path) as infile:
-            with open(seal_path, "w") as outfile:
-                try:
+    # encrypt
+    seal_path = file_path+".sealed"
+    with open(file_path) as infile:
+        with open(seal_path, "w") as outfile:
+            try:
+                _cyphertext, _result, _sign_result = c.encrypt(
+                    infile, recipients=seal_list,
+                    sign=True, sink=outfile)
+            except gpg.errors.InvalidRecipients:
+                print("Some of the recipients are not trusted."
+                      " Do you want to proceed anyway[y/N]", end='>')
+                answer = input().lower()
+                if answer == 'y' or answer == 'yes':
                     _cyphertext, _result, _sign_result = c.encrypt(
-                        infile, recipients=seal_list,
-                        sign=True, sink=outfile)
-                except gpg.errors.InvalidRecipients:
-                    print("Some of the recipients are not trusted."
-                          " Do you want to proceed anyway[y/N]", end='>')
-                    answer = input().lower()
-                    if answer == 'y' or answer == 'yes':
-                        _cyphertext, _result, _sign_result = c.encrypt(
-                            infile, recipients=seal_list, sign=True,
-                            sink=outfile, always_trust=True)
-                    else:
-                        exit(3)
-
-    except BaseException:
-        if os.environ['DEBUG'] == 'yes':
-            raise
-        exit(2)
+                        infile, recipients=seal_list, sign=True,
+                        sink=outfile, always_trust=True)
+                else:
+                    exit(1)
 
 
 if __name__ == "__main__":
@@ -103,11 +86,10 @@ if __name__ == "__main__":
 
     for recipient in recipients:
         if not in_keyring(recipient):
-            sys.stderr.write("Sorry! No matching contact for `{recipient}`\n"
-                             "Please add the person to your contacts first!\n"
-                             "For help on adding contacts run"
-                             "`egpg contact help`\n\n"
-                             .format(recipient=recipient))
-            exit(1)
+            fail("Sorry! No matching contact for `{recipient}`\n"
+                 "Please add the person to your contacts first!\n"
+                 "For help on adding contacts run"
+                 "`egpg contact help`\n\n"
+                 .format(recipient=recipient))
 
     seal(file_path, recipients)

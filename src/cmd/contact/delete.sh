@@ -23,9 +23,6 @@ cmd_contact_delete() {
     [[ -z $1 ]] && fail "Usage:\n$(cmd_contact_delete_help)"
 
     call_gpg contact/delete.py $force "$@"
-    
-    err=$?
-    [[ $err == 0 ]] || fail "Deleting contacts failed!"
 }
 
 #

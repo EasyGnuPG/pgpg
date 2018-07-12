@@ -1,9 +1,12 @@
-import gpg
 import sys
-import os
+
+import gpg
+
+from fn.auxiliary import handle_exception
 
 
-def gen(parameters):
+@handle_exception(gpg.errors.GpgError)
+def generate_key(parameters):
     params = """<GnupgKeyParms format="internal">
     {parameters}
     </GnupgKeyParms>
@@ -12,15 +15,9 @@ def gen(parameters):
     c = gpg.Context()
     c.op_genkey(params, None, None)
     print("Generated key with fingerprint {fpr}.".format(
-          fpr=c.op_genkey_result().fpr))
+        fpr=c.op_genkey_result().fpr))
 
 
 if __name__ == "__main__":
     parameters = sys.argv[1]
-    try:
-        gen(parameters)
-    except BaseException:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        else:
-            exit(1)
+    generate_key(parameters)

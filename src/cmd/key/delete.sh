@@ -23,9 +23,6 @@ cmd_key_delete() {
     # delete public keys
     call_gpg key/delete.py "$fingerprint"
 
-    local err=$?
-    [[ $err == 0 ]] || fail "Error deleting key $key_id"
-
     # remove any partials
     rm -f "$GNUPGHOME"/$key_id.key.[0-9][0-9][0-9]
     rm -f "$DONGLE"/.gnupg/$key_id.key.[0-9][0-9][0-9]

@@ -46,9 +46,6 @@ cmd_key_list() {
     for gpg_key in $secret_keys; do
         echo
         call_gpg fn/print_key.py $gpg_key
-        
-        local err=$?
-        [[ $err == 0 ]] || fail "Error getting key $gpg_key"
         echo
     done
 }

@@ -25,10 +25,6 @@ cmd_open() {
     # decrypt and verify
     gnupghome_setup
     call_gpg open.py "$file" "$output" # $output will be overwritten if exists
-
-    local err=$?
-    [[ $err == 0 ]] || fail "Error opening $file"
-
     gnupghome_reset
 }
 

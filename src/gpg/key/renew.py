@@ -1,20 +1,17 @@
-import os
 import sys
+
+import gpg
+
+from fn.auxiliary import handle_exception
 from fn.interact import interact
 
 
+@handle_exception(gpg.errors.GpgError)
 def renew(key, time):
     commands = [None, "expire", None, time, None,
                 "key 1", None, "expire", None, time, None,
                 "save", None, None]
-    try:
-        interact(key, commands)
-    except BaseException:
-        if os.environ["DEBUG"] == "yes":
-            raise
-        print("Error renewing {key}".format(key=key),
-              file=sys.stderr, flush=True)
-        exit(1)
+    interact(key, commands)
 
 
 if __name__ == "__main__":

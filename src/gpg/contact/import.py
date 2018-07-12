@@ -1,20 +1,18 @@
-import gpg
 import sys
-import os
+
+import gpg
+
+from fn.auxiliary import fail, handle_exception
 
 
+@handle_exception(gpg.errors.GpgError, FileNotFoundError)
 def import_contact(import_path):
     c = gpg.Context()
-    try:
-        with open(import_path) as import_file:
-            c.op_import(import_file)
-            result = c.op_import_result()
-            if result is None:
-                exit(1)
-    except BaseException:
-        if os.environ['DEBUG'] == 'yes':
-            raise
-        exit(2)
+    with open(import_path) as import_file:
+        c.op_import(import_file)
+        result = c.op_import_result()
+        if result is None:
+            fail("Could not import contact")
 
 
 if __name__ == "__main__":

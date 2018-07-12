@@ -35,7 +35,7 @@ cmd_contact_trust() {
         *) fail "Unknown trust level: $level" ;;
     esac
 
-    call_gpg contact/trust.py "$contact" "$level"
+    call_gpg contact/trust.py "$contact" "$level" || fail ""
     call cmd_contact_list "$contact" | grep -e "^uid:" -e "^trust:" -e "^\$"
 }
 
