@@ -24,7 +24,7 @@ test_expect_success 'egpg sign' '
 '
 
 test_expect_success 'egpg verify' '
-    egpg verify test1.txt.signature 2>&1 | grep "Good signature from \"Test 1 <test1@example.org>\""
+    egpg verify test1.txt.signature 2>&1 | grep "gpg: Good signature from \"Test 1 <test1@example.org>\""
 '
 
 test_expect_success 'egpg seal' '
@@ -34,7 +34,7 @@ test_expect_success 'egpg seal' '
 '
 
 test_expect_success 'egpg open' '
-    egpg open test1.txt.sealed 2>&1 | grep "Good signature from \"Test 1 <test1@example.org>\"" &&
+    egpg open test1.txt.sealed 2>&1 | grep "gpg: Good signature from \"Test 1 <test1@example.org>\"" &&
     [[ -f test1.txt.sealed ]] &&
     [[ -f test1.txt ]] &&
     [[ $(cat test1.txt) == "Test 1" ]]

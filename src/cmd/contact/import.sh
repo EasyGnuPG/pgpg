@@ -15,7 +15,7 @@ cmd_contact_import() {
 
     # import
     echo "Importing contacts from file: $file"
-    call_gpg contact/import.py "$file"
+    gpg --import "$file"
 }
 
 #

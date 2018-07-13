@@ -17,7 +17,7 @@ Try first:  $(basename $0) key join
       and:  $(basename $0) key split
 "
 
-    call_gpg key/pass.py $GPG_KEY
+    gpg --batch --no-tty --passwd $GPG_KEY
 }
 
 #
