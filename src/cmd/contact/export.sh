@@ -9,7 +9,7 @@ _EOF
 }
 
 cmd_contact_export() {
-    local opts output
+    local opts output="-"
     opts="$(getopt -o o: -l output: -n "$PROGRAM" -- "$@")"
     local err=$?
     eval set -- "$opts"
@@ -20,16 +20,10 @@ cmd_contact_export() {
         esac
     done
     [[ $err == 0 ]] || fail "Usage:\n$(cmd_contact_export_help)"
-
-    if [[ -f "$output" ]]; then
-        yesno "File '$output' exists. Overwrite?" || return 1
-    fi
-
-    # set output to stdout if empty
-    [[ -z "$output" ]] && output="-"
+    [[ -f "$output" ]] && yesno "File '$output' exists. Overwrite?" || return 1
 
     # export
-    call_gpg contact/export.py "$GNUPGHOME" "$output" "$@"
+    gpg --armor --export --output $output $@
 }
 
 #

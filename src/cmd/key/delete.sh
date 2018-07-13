@@ -19,9 +19,8 @@ cmd_key_delete() {
     for grip in $(get_keygrips $key_id); do
         rm -f "$GNUPGHOME"/private-keys-v1.d/$grip.key
     done
-
     # delete public keys
-    call_gpg key/delete.py "$fingerprint"
+    gpg --delete-keys --batch --yes "$fingerprint"
 
     # remove any partials
     rm -f "$GNUPGHOME"/$key_id.key.[0-9][0-9][0-9]
