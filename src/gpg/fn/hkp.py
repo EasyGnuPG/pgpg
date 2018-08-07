@@ -38,9 +38,9 @@ class Key:
                                                        start=self.start,
                                                        end=self.expire))
         return rstring
-    
+
     def setFullKey(self, fullKey):
-        self.fullKey=fullKey
+        self.fullKey = fullKey
 
 
 class TooManyKeys(Exception):
@@ -56,8 +56,8 @@ class Server:
     def sanitize(self, serverurl):
         serverurl = serverurl.strip()
 
-        if(serverurl.startswith("hkp://")):
-            serverurl="http://" + serverurl[6:]
+        if serverurl.startswith("hkp://"):
+            serverurl = "http://" + serverurl[6:]
         if not serverurl.startswith("http"):
             serverurl = "http://" + serverurl
         if not serverurl.endswith("/"):
@@ -66,7 +66,7 @@ class Server:
         return serverurl
 
     def get(self, pattern):
-        payload = {"op": "get", "search": "0x" + pattern, "options":"mr"}
+        payload = {"op": "get", "search": "0x" + pattern, "options": "mr"}
         r = requests.get(self.lookupurl, verify=True, params=payload)
         print_debug(r)
         print_debug("Key text", r.text, sep="\n")
@@ -77,11 +77,11 @@ class Server:
         r = requests.get(self.lookupurl, verify=True, params=payload)
 
         # No keys found
-        if(r.status_code == 404):
+        if r.status_code == 404:
             return None
-        elif(r.status_code == 500):
+        elif r.status_code == 500:
             raise TooManyKeys("Too many keys")
-        elif(r.status_code == 200):
+        elif r.status_code == 200:
             text = r.text.split("\n", 1)[1].strip()
             keylist = []
             key_text = text.split("pub:")[1:]
@@ -91,7 +91,7 @@ class Server:
                 final_uids = []
                 for uid in uids:
                     uid = uid.strip().split(":")
-                    if(uid[0] == "uid"):
+                    if uid[0] == "uid":
                         final_uids.append(tuple(uid[1:]))
 
                 finalkey = Key(pub, final_uids)
@@ -110,13 +110,14 @@ class Server:
 
         while(True):
             try:
-                choices = map(int, input("Enter your choice > ").strip().split())
+                choices = map(int,
+                              input("Enter your choice > ").strip().split())
                 break
             except EOFError:
                 return None
             except ValueError:
                 print("Please Enter valid choices")
-            
+
         for number in choices:
             if number < len(keys) and number >= 1:
                 keys[number-1].setFullKey(self.get(keys[number-1].fpr))
@@ -127,10 +128,10 @@ class Server:
 
 if __name__ == "__main__":
     server = Server("pgp.mit.edu")
-    searchstr = input("enter a recipient to search> ")
+    searchstr = input("Enter a recipient to search> ")
     keys = server.index(searchstr)
 
-    if(keys in [None, []]):
+    if keys in [None, []]:
         print("No keys found")
     else:
         server.getchoice(keys)

@@ -8,10 +8,10 @@ from fn.hkp import Server
 def search(serverurl, searchstring):
     server = Server(serverurl)
     print_debug(server.serverurl)
-    
+
     keys = server.index(searchstring)
 
-    if(keys in [None, []]):
+    if keys in [None, []]:
         fail("No keys found")
     else:
         keysToImport = server.getchoice(keys)
@@ -22,7 +22,6 @@ def search(serverurl, searchstring):
         result = c.op_import_result()
         if result is None:
             fail("Could not import contact")
-        
         print_debug(result)
 
 
