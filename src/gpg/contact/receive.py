@@ -2,12 +2,18 @@ import sys
 import gpg
 from fn.auxiliary import handle_exception, fail, print_debug
 from fn.hkp import Server
+import re
 
 
 @handle_exception()
 def receive(serverurl, keystring):
+    pattern8 = re.compile(r"^[0-9a-fA-F]{8}$")
+    pattern16 = re.compile(r"^[0-9a-fA-F]{16}$")
+    if (re.match(pattern8, keystring) is None and 
+            re.match(pattern16, keystring) is None ):
+        fail("Invalid key pattern!")
+
     server = Server(serverurl)
-    # TODO: check keyid pattern vailidity
     fullKey = server.get(keystring)
 
     if(fullKey in [None, []]):
