@@ -1,4 +1,5 @@
 import requests
+from fn.auxiliary import print_debug
 
 
 class Key:
@@ -11,7 +12,7 @@ class Key:
         "20": "Elgamal"
     }
 
-    def __init__(self, pub, uids, fullkey=None):
+    def __init__(self, pub, uids, fullKey=None):
         self.fpr = pub[0]
 
         try:
@@ -25,7 +26,7 @@ class Key:
         self.status = pub[5]
 
         self.uids = uids
-        self.fullkey = fullkey
+        self.fullKey = fullKey
 
     def __str__(self):
         uidstring = "\n".join([x[0] for x in self.uids])
@@ -37,6 +38,9 @@ class Key:
                                                        start=self.start,
                                                        end=self.expire))
         return rstring
+    
+    def setFullKey(self, fullKey):
+        self.fullKey=fullKey
 
 
 class TooManyKeys(Exception):
@@ -53,7 +57,7 @@ class Server:
         serverurl = serverurl.strip()
 
         if(serverurl.startswith("hkp://")):
-            serverurl.replace("hkp", "http", 1)
+            serverurl="http://" + serverurl[6:]
         if not serverurl.startswith("http"):
             serverurl = "http://" + serverurl
         if not serverurl.endswith("/"):
@@ -62,9 +66,11 @@ class Server:
         return serverurl
 
     def get(self, pattern):
-        payload = {"op": "get", "search": "0x" + pattern, "options": "mr"}
+        payload = {"op": "get", "search": "0x" + pattern, "options":"mr"}
         r = requests.get(self.lookupurl, verify=True, params=payload)
-        print(r.text)
+        print_debug(r)
+        print_debug("Key text", r.text, sep="\n")
+        return r.text
 
     def index(self, pattern):
         payload = {"op": "index", "search": pattern, "options": "mr"}
@@ -93,10 +99,12 @@ class Server:
             return keylist
 
         else:
-            print(r)
+            print_debug(r)
             raise Exception("Unknown Error")
 
     def getchoice(self, keys):
+        results = []
+
         for sno, key in enumerate(keys):
             print("({number}) {key}".format(number=sno+1, key=str(key)))
 
@@ -111,7 +119,10 @@ class Server:
             
         for number in choices:
             if number < len(keys) and number >= 1:
-                self.get(keys[number-1].fpr)
+                keys[number-1].setFullKey(self.get(keys[number-1].fpr))
+                results.append(keys[number-1])
+
+        return results
 
 
 if __name__ == "__main__":
