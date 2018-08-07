@@ -31,7 +31,10 @@ is_false() {
 }
 
 gpg_version() {
-    gpg --version | head -n 1 | cut -d" " -f3
+    python3 <<EndOfPythonCode
+import gpg
+print(gpg.Context().engine_info.version)
+EndOfPythonCode
 }
 
 # Return the ids of the keys that are not revoked and not expired.
