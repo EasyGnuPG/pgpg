@@ -21,7 +21,7 @@ class KeyEditor(object):
             self.step += 1
             self.done = True if len(self.cmds) == self.step else False
 
-        if(debug):
+        if debug:
             print_debug("cmd: {cmd}\n".format(cmd=cmd))
             try:
                 input("Debug mode: Press any key to continue!")

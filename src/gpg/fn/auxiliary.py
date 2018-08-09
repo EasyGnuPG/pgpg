@@ -5,7 +5,7 @@ debug = True if os.environ["DEBUG"] == "yes" else False
 
 
 def print_debug(*args, **kwargs):
-    if(debug):
+    if debug:
         print(*args, **kwargs)
 
 
@@ -14,7 +14,7 @@ def print_error(*args, **kwargs):
 
 
 def fail(e):
-    if(debug and isinstance(e, BaseException)):
+    if debug and isinstance(e, BaseException):
         raise e
     print_error(e)
     exit(1)
