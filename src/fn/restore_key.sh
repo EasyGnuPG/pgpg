@@ -13,7 +13,7 @@ restore_key() {
 
     # restore public keys
     local pub_key=$(ls "$WORKDIR"/*/*.pub)
-    gpg --import "$pub_key" || fail "Failed to import public key."
+    call_gpg contact/import.py "$pub_key" || fail "Failed to import public key."
 
     # set trust to 'ultimate'
     local key_id=$(basename "${pub_key%.pub}")

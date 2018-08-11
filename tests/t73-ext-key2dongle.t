@@ -42,11 +42,7 @@ test_expect_success 'egpg key2dongle (dongle check)' '
 
     egpg key2dongle 2>&1 | grep "You need a dongle to move the key." &&
 
-    egpg key2dongle "$DONGLE/test1" 2>&1 | grep "Dongle directory does not exist" &&
-
-    mkdir -p "$DONGLE/test1" &&
-    chmod -w "$DONGLE/test1" &&
-    echo "$DONGLE/test1" | egpg key2dongle 2>&1 | grep "Dongle directory is not writable"
+    egpg key2dongle "$DONGLE/test1" 2>&1 | grep "Dongle directory does not exist"
 '
 
 test_done

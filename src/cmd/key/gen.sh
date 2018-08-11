@@ -59,7 +59,7 @@ cmd_key_gen() {
 
     # generate the key
     haveged_start
-    echo -e "$PARAMETERS" | gpg --batch --gen-key 2>/dev/null
+    call_gpg key/gen.py "$PARAMETERS" || fail ""
     haveged_stop
 
     # restrict expiration time to 1 month from now

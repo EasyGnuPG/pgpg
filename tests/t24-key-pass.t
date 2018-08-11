@@ -9,10 +9,15 @@ test_expect_success 'egpg key pass' '
 
     setup_autopin "0123456789" &&
     egpg key pass &&
-
+    
     echo "Test 1" > test1.txt &&
     egpg sign test1.txt &&
-    egpg verify test1.txt.signature 2>&1 | grep "gpg: Good signature"
+    egpg verify test1.txt.signature 2>&1 | grep "Good signature"
+    
+    setup_autopin "xyz-wrong-passphrase" &&
+    rm -f test1.txt.signature &&
+    egpg sign test1.txt 2>&1 | grep "Bad passphrase" &&
+    [[ ! -f test1.txt.signature ]]
 '
 
 test_done

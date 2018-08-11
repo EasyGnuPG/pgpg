@@ -28,9 +28,7 @@ Try first:  $(basename $0) key join
     local today=$(date -d $(date +%F) +%s)
     time=$(( ( $expday - $today ) / 86400 ))
 
-    local commands=";expire;$time;y;key 1;expire;$time;y;key 1;save"
-    commands=$(echo "$commands" | tr ';' "\n")
-    echo -e "$commands" | gpg --no-tty --command-fd=0 --key-edit $GPG_KEY 2>/dev/null
+    call_gpg key/renew.py "$GPG_KEY" "$time" || fail ""
     call_fn gpg_send_keys $GPG_KEY
 
     call cmd_key_list

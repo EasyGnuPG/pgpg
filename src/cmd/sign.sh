@@ -15,8 +15,7 @@ cmd_sign() {
 
     # sign
     gnupghome_setup
-    gpg --local-user $GPG_KEY \
-        --detach-sign --armor --output "$file.signature" "$file"
+    call_gpg sign.py $GPG_KEY "$file"
     gnupghome_reset
 }
 

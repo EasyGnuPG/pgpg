@@ -22,7 +22,7 @@ cmd_contact_receive() {
     [[ $err != 0 ]] && fail "Usage:\n$(cmd_contact_receive_help)"
     [[ -z $1 ]] && fail "Usage:\n$(cmd_contact_receive_help)"
 
-    gpg --keyserver "$keyserver" --recv-keys "$@"
+    call_gpg contact/receive.py "$keyserver" "$@"
 }
 
 #

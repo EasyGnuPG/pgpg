@@ -22,7 +22,7 @@ cmd_contact_search() {
     [[ $err != 0 ]] && fail "Usage:\n$(cmd_contact_search_help)"
     [[ -z $1 ]] && fail "Usage:\n$(cmd_contact_search_help)"
 
-    gpg --keyserver="$keyserver" --search-keys "$@"
+    call_gpg contact/search.py "$keyserver" "$@"
 }
 
 #
